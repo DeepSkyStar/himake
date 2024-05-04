@@ -1,0 +1,16 @@
+{
+    "name": "himake",
+    "owner": "",
+    "desc": "himake",
+    "version": "1.0.0",
+    "type": "app",
+    "remote": "",
+    "is_default" : false,
+    "commands":[
+        "himake"
+    ],
+    "resources":[
+    ],
+    "dependencies":[
+    ]
+}
