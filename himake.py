@@ -16,7 +16,15 @@ def __info(args):
 
 
 def __create(args):
-    HiLog.warning(HiText("menu_create_warning", "Not Yet Support!"))
+    name = args["name"]
+    is_force = args["force"]
+    curpath = os.path.dirname(os.path.abspath(__file__))
+    template_path = os.path.join(curpath, "template/c_project")
+    HiLog.info(template_path)
+    template = HiTemplate(project_name=name, template_dir=template_path)
+    template.generate_to_path(is_force=is_force)
+    path = os.path.join(os.getcwd(), name)
+    HiLog.info(HiText("menu_create_finished", "Template already generate to ") + path)
     pass
 
 def __build(args):
@@ -38,10 +46,12 @@ def __run(args):
     pass
 
 def __test(args):
+    HiLog.warning(HiText("menu_test_warning", "Not Yet Support!"))
     pass
 
 def __clean(args):
     CMakeProject().clean()
+    HiLog.info(HiText("menu_clean_finised", "Done!"))
     pass
 
 def __setup_parser():
@@ -82,6 +92,13 @@ def __setup_parser():
     parser_create.add_argument(
         'name',
         help=HiText("menu_create_name_desc", "The project name."),
+        )
+    
+    parser_create.add_argument(
+        '-f',
+        '--force',
+        help=HiText("menu_create_force_desc", "Force create."),
+        action="store_true"
         )
 
     parser_create.set_defaults(func=__create)

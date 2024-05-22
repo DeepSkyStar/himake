@@ -4,7 +4,7 @@
 Author: Cosmade
 Date: 2024-05-10 20:27:52
 LastEditors: deepskystar deepskystar@outlook.com
-LastEditTime: 2024-05-22 20:26:58
+LastEditTime: 2024-05-22 22:09:59
 FilePath: /himake/cmake_project.py
 Description: 
 
@@ -43,7 +43,7 @@ class CMakeProject():
     @property
     def path(self) -> str:
         return self._path
-    
+
     def check_rebuild(self, run_path: str) -> bool:
         source_cmakefile = os.path.join(self._path, "CMakeLists.txt")
         build_cmakefile = os.path.join(run_path, "CMakeLists.txt")
@@ -56,7 +56,6 @@ class CMakeProject():
         modify_time = os.path.getmtime(build_cmakefile)
         modify_time = modify_time if os.path.getmtime(source_cmakefile) > modify_time else os.path.getmtime(source_cmakefile)
 
-        HiLog.info("modify time:" + str(modify_time) + " build time:" + str(last_build_time))
         if modify_time > last_build_time:
             return True
         return False
