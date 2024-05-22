@@ -1,8 +1,8 @@
 {
     "name": "himake",
-    "owner": "",
-    "desc": "himake",
-    "version": "1.0.0",
+    "owner": "Cosmade",
+    "desc": "For cross-platform c language build.",
+    "version": "0.1.0",
     "type": "app",
     "remote": "",
     "is_default" : false,
