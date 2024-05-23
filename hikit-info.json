@@ -4,7 +4,7 @@
     "desc": "For cross-platform c language build.",
     "version": "0.1.0",
     "type": "app",
-    "remote": "",
+    "remote": "https://github.com/DeepSkyStar/himake.git",
     "is_default" : false,
     "commands":[
         "himake"
