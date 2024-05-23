@@ -1,6 +1,7 @@
 {
     "name": "himake",
     "owner": "Cosmade",
+    "contact": "deepskystar@outlook.com",
     "desc": "For cross-platform c language build.",
     "version": "0.1.0",
     "type": "app",
