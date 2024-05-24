@@ -20,12 +20,30 @@ def __create(args):
     is_force = args["force"]
     curpath = os.path.dirname(os.path.abspath(__file__))
     template_path = os.path.join(curpath, "template/c_project")
-    HiLog.info(template_path)
     template = HiTemplate(project_name=name, template_dir=template_path)
     template.generate_to_path(is_force=is_force)
     path = os.path.join(os.getcwd(), name)
     HiLog.info(HiText("menu_create_finished", "Template already generate to ") + path)
     pass
+
+
+def __add(args):
+    name = args["name"]
+    is_force = args["force"]
+    curpath = os.path.dirname(os.path.abspath(__file__))
+    template_path = os.path.join(curpath, "template/app")
+
+    if not CMakeProject.check_project(os.getcwd()):
+        HiLog.warning(HiText("menu_add_failed", "Not a legal himake project: ") + os.getcwd())
+        return None
+    project_name = os.path.basename(os.getcwd())
+    project_app = CMakeProject().runpath
+    template = CMakeProjectAppTemplate(project_name=project_name, template_dir=template_path, app_name=name)
+    template.generate_to_path(path=project_app, is_force=is_force)
+
+    HiLog.info(HiText("menu_add_finished", "App already add to ") + project_app)
+    pass
+
 
 def __build(args):
     is_force = args["force"]
@@ -102,6 +120,26 @@ def __setup_parser():
         )
 
     parser_create.set_defaults(func=__create)
+
+    # add Apps.
+    parser_add = subparsers.add_parser(
+        name="add",
+        help=HiText("menu_add_help", "Provide template for add app to project.")
+        )
+
+    parser_add.add_argument(
+        'name',
+        help=HiText("menu_add_name_desc", "The app name."),
+        )
+    
+    parser_add.add_argument(
+        '-f',
+        '--force',
+        help=HiText("menu_add_force_desc", "Force add."),
+        action="store_true"
+        )
+
+    parser_add.set_defaults(func=__add)
 
     # Build Apps.
     parser_build = subparsers.add_parser(

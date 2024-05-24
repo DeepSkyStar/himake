@@ -4,7 +4,7 @@
 Author: Cosmade
 Date: 2024-05-10 20:27:52
 LastEditors: deepskystar deepskystar@outlook.com
-LastEditTime: 2024-05-22 22:09:59
+LastEditTime: 2024-05-24 19:35:16
 FilePath: /himake/cmake_project.py
 Description: 
 
@@ -24,9 +24,30 @@ limitations under the License.
 
 import os
 import shutil
-import time
 from hi_basic import *
 
+
+class CMakeProjectAppTemplate(HiTemplate):
+    def __init__(self, project_name: str, template_dir: str, app_name: str):
+        self._app_name = app_name
+        super().__init__(project_name, template_dir)
+        pass
+
+    def _replace_content(self, content: str) -> str:
+        """Override Point."""
+        return super()._replace_content(content).replace(
+            "<APP_NAME>", self._app_name
+        )
+    
+    def generate_to_path(self, path: str = os.getcwd(), is_force: bool = False) -> None:
+        """Generate to path."""
+        path = os.path.join(path, self._app_name)
+        self._legal_check(path, is_force)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        self._deploy_template(path)
+        pass
+    pass
 
 class CMakeProject():
     def __init__(self, path: str = None) -> None:
@@ -35,14 +56,20 @@ class CMakeProject():
             self._path = os.getcwd()
         self._build_path = os.path.join(self._path, "build")
         self._test_path = os.path.join(self._path, "tests")
-        self._test_build_path = os.path.join(self._test_path, "build")
         self._run_path = os.path.join(self._path, "apps")
-        self._run_build_path = os.path.join(self._run_path, "build")
         pass
 
     @property
     def path(self) -> str:
         return self._path
+
+    @property
+    def runpath(self) -> str:
+        return self._run_path
+
+    @property
+    def testpath(self) -> str:
+        return self._test_path
 
     def check_rebuild(self, run_path: str) -> bool:
         source_cmakefile = os.path.join(self._path, "CMakeLists.txt")
@@ -54,7 +81,7 @@ class CMakeProject():
         last_build_time = os.path.getmtime(build_checkfile)
         
         modify_time = os.path.getmtime(build_cmakefile)
-        modify_time = modify_time if os.path.getmtime(source_cmakefile) > modify_time else os.path.getmtime(source_cmakefile)
+        modify_time = modify_time if os.path.getmtime(source_cmakefile) < modify_time else os.path.getmtime(source_cmakefile)
 
         if modify_time > last_build_time:
             return True
@@ -64,7 +91,6 @@ class CMakeProject():
     def check_project(cls, path: str) -> bool:
         check_files = [
             "CMakeLists.txt",
-            "apps/CMakeLists.txt",
         ]
         check_dirs = [
             "include",
@@ -93,14 +119,20 @@ class CMakeProject():
         return True
 
     def build_dir(self, path: str) -> None:
+        need_rebuild = self.check_rebuild(path)
+        if need_rebuild:
+            self.clean()
+
         build_path = os.path.join(path, "build")
         if not os.path.exists(build_path):
             os.mkdir(build_path)
         if not os.path.isdir(build_path):
             raise FileExistsError(build_path + " is not a dir!")
 
-        if self.check_rebuild(path):
+        if need_rebuild:
             os.system("cmake -S " + path + " -B " + build_path)
+        # else:
+            # os.remove(os.path.join(path, "build/CMakeCache.txt"))
         os.system("cmake --build " + build_path)
         pass
 
@@ -114,9 +146,15 @@ class CMakeProject():
     def clean(self) -> None:
         clean_list = [
             self._build_path,
-            self._test_build_path,
-            self._run_build_path
+            os.path.join(self._test_path, "build"),
+            # self._run_build_path
         ]
+        
+        for name in os.listdir(self._run_path):
+            path = os.path.join(self._run_path, name)
+            build_path = os.path.join(path, "build")
+            clean_list.append(build_path)
+
         for path in clean_list:
             if os.path.exists(path):
                 # os.remove(path)
@@ -124,9 +162,10 @@ class CMakeProject():
         pass
 
     def run(self, name: str = "main", nobuild: bool = False, args: str = "") -> None:
+        app_path = os.path.join(self._run_path, name)
         if not nobuild:
-            self.build_dir(self._run_path)
-        os.system("./apps/build/" + name + " " + args)
+            self.build_dir(app_path)
+        os.system("./apps/" + name + "/build/" + name + " " + args)
         pass
 
     def test(self) -> None:
