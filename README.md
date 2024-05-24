@@ -1,7 +1,7 @@
 # himake
 
 himake provides a series of convenient methods for managing CMake and performing cross-platform compilation.
-The directory organization logic and CMakeLists refer to <<Modern CMake>>.
+The directory organization logic and CMakeLists refer to "Modern CMake".
 
 [中文说明](README-zh.md)
 [Release Notes](release-notes.md)

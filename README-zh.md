@@ -1,7 +1,7 @@
 # himake
 
 himake，用于提供一系列方便管理CMake和进行跨平台编译的方法。
-目录组织逻辑和CMakeLists参考<<Modern CMake>>.
+目录组织逻辑和CMakeLists参考 "Modern CMake".
 
 [Relase Notes](release-notes.md)
 
