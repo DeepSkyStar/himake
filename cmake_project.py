@@ -4,7 +4,7 @@
 Author: Cosmade
 Date: 2024-05-10 20:27:52
 LastEditors: deepskystar deepskystar@outlook.com
-LastEditTime: 2024-05-24 19:35:16
+LastEditTime: 2024-05-27 05:57:17
 FilePath: /himake/cmake_project.py
 Description: 
 
@@ -66,6 +66,10 @@ class CMakeProject():
     @property
     def runpath(self) -> str:
         return self._run_path
+
+    @property
+    def apps(self) -> list:
+        return os.listdir(self._run_path)
 
     @property
     def testpath(self) -> str:

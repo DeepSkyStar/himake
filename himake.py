@@ -54,13 +54,25 @@ def __build(args):
     pass
 
 def __run(args):
-    target = args["target"]
+    param = args["param"]
     is_force = args["force"]
     nobuild = args["nobuild"]
+
+    target = "main"
+
     project = CMakeProject()
+    args = ""
+
+    if len(param) > 0:
+        if param[0] in project.apps:
+            target = param[0]
+            args = " ".join(param[1:])
+        else:
+            args = " ".join(param)
+
     if is_force:
         project.clean()
-    project.run(name=target, nobuild=nobuild)
+    project.run(name=target, nobuild=nobuild, args=args)
     pass
 
 def __test(args):
@@ -163,10 +175,9 @@ def __setup_parser():
         )
 
     parser_run.add_argument(
-        'target',
-        help=HiText("menu_run_target_help", "The target name, default is main."),
-        nargs="?",
-        default="main"
+        'param',
+        help=HiText("menu_run_target_help", "The target name, default is main. and can pass args into the program."),
+        nargs="*",
         )
 
     parser_run_group = parser_run.add_mutually_exclusive_group()
