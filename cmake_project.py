@@ -4,7 +4,7 @@
 Author: Cosmade
 Date: 2024-05-10 20:27:52
 LastEditors: deepskystar deepskystar@outlook.com
-LastEditTime: 2024-05-27 05:57:17
+LastEditTime: 2024-06-06 07:55:44
 FilePath: /himake/cmake_project.py
 Description: 
 
@@ -122,7 +122,7 @@ class CMakeProject():
 
         return True
 
-    def build_dir(self, path: str) -> None:
+    def build_dir(self, path: str, args: str) -> None:
         need_rebuild = self.check_rebuild(path)
         if need_rebuild:
             self.clean()
@@ -134,14 +134,14 @@ class CMakeProject():
             raise FileExistsError(build_path + " is not a dir!")
 
         if need_rebuild:
-            os.system("cmake -S " + path + " -B " + build_path)
+            os.system("cmake "+ args + " -S " + path + " -B " + build_path)
         # else:
             # os.remove(os.path.join(path, "build/CMakeCache.txt"))
-        os.system("cmake --build " + build_path)
+        os.system("cmake" + " --build " + build_path)
         pass
 
     def build(self) -> None:
-        self.build_dir(self._path)
+        self.build_dir(self._path, args="")
         # -DCMAKE_SYSTEM_NAME=<system>
         # -DCMAKE_SYSTEM_PROCESSOR=<processor>
         # cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=<ios-cmake-toolchain> -DIOS_PLATFORM=<platform> <source-dir>
@@ -165,10 +165,10 @@ class CMakeProject():
                 shutil.rmtree(path)
         pass
 
-    def run(self, name: str = "main", nobuild: bool = False, args: str = "") -> None:
+    def run(self, name: str = "main", nobuild: bool = False, args: str = "", build_args: str = "") -> None:
         app_path = os.path.join(self._run_path, name)
         if not nobuild:
-            self.build_dir(app_path)
+            self.build_dir(app_path, args=build_args)
         os.system("./apps/" + name + "/build/" + name + " " + args)
         pass
 

@@ -57,12 +57,15 @@ def __run(args):
     param = args["param"]
     is_force = args["force"]
     nobuild = args["nobuild"]
+    debug = args["debug"]
 
     target = "main"
 
     project = CMakeProject()
     args = ""
-
+    build_args = ""
+    if debug:
+        build_args = " -DCMAKE_BUILD_TYPE=Debug"
     if len(param) > 0:
         if param[0] in project.apps:
             target = param[0]
@@ -72,7 +75,7 @@ def __run(args):
 
     if is_force:
         project.clean()
-    project.run(name=target, nobuild=nobuild, args=args)
+    project.run(name=target, nobuild=nobuild, args=args, build_args=build_args)
     pass
 
 def __test(args):
@@ -175,10 +178,18 @@ def __setup_parser():
         )
 
     parser_run.add_argument(
+        '-d',
+        '--debug',
+        help=HiText("menu_run_force_desc", "Run and rebuild all."),
+        action="store_true"
+        )
+
+    parser_run.add_argument(
         'param',
         help=HiText("menu_run_target_help", "The target name, default is main. and can pass args into the program."),
         nargs="*",
         )
+
 
     parser_run_group = parser_run.add_mutually_exclusive_group()
 
