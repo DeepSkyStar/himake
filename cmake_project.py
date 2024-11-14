@@ -4,7 +4,7 @@
 Author: Cosmade
 Date: 2024-05-10 20:27:52
 LastEditors: deepskystar deepskystar@outlook.com
-LastEditTime: 2024-06-06 07:55:44
+LastEditTime: 2024-11-14 17:12:35
 FilePath: /himake/cmake_project.py
 Description: 
 
@@ -25,7 +25,6 @@ limitations under the License.
 import os
 import shutil
 from hi_basic import *
-
 
 class CMakeProjectAppTemplate(HiTemplate):
     def __init__(self, project_name: str, template_dir: str, app_name: str):
@@ -83,7 +82,7 @@ class CMakeProject():
         if not os.path.exists(build_checkfile) or not os.path.isfile(build_checkfile):
             return True
         last_build_time = os.path.getmtime(build_checkfile)
-        
+
         modify_time = os.path.getmtime(build_cmakefile)
         modify_time = modify_time if os.path.getmtime(source_cmakefile) < modify_time else os.path.getmtime(source_cmakefile)
 
@@ -137,7 +136,7 @@ class CMakeProject():
             os.system("cmake "+ args + " -S " + path + " -B " + build_path)
         # else:
             # os.remove(os.path.join(path, "build/CMakeCache.txt"))
-        os.system("cmake" + " --build " + build_path)
+        os.system("cmake" + " --build " + build_path + " -- -j")
         pass
 
     def build(self) -> None:
